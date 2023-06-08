@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from django.urls import reverse, resolve
 from django.http import HttpResponse
+from django.contrib import messages as messages_module
+from .models import UserApplication
 
 # Importing our first class-based view
 from .views import HomePageView
@@ -62,3 +64,48 @@ class SubmitDataFormTest(TestCase):
         # Tests that the correct template is used for the form page.
         response = self.client.get(reverse("submit"))
         self.assertTemplateUsed(response, "submit_data.html")
+
+
+# Creating test cases to make sure that the form is creating objects and storing them in the database.
+class UserApplicationTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_new_application(self):
+        # Getting the current count of UserApplication objects
+        initial_count = UserApplication.objects.count()
+
+        # Simulate form submission
+        response = self.client.post(
+            reverse("submit"),
+            {
+                "name": "Jon",
+                "last_name": "Snow",
+                "age": "30",
+                "email": "jon.snow@got.com",
+            },
+            follow=True,
+        )
+
+        # Check that the form submission was successful(must redirect to homepage)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the new UserApplication object was created
+        new_count = UserApplication.objects.count()
+        self.assertEqual(new_count, initial_count + 1)
+
+        # Check that the new UserApplication has the correct data
+        new_application = UserApplication.objects.latest("id")
+        self.assertEqual(new_application.name, "Jon")
+        self.assertEqual(new_application.last_name, "Snow")
+        self.assertEqual(new_application.age, 30)
+        self.assertEqual(new_application.email, "jon.snow@got.com")
+
+        # Test for a success message after submission
+        messages = list(response.context["messages"])
+        self.assertEqual(len(messages), 1)
+        message = messages[0]
+        self.assertEqual(message.level, messages_module.SUCCESS)
+        self.assertEqual(
+            message.message, "Your form was submitted successfully. Danke!"
+        )
