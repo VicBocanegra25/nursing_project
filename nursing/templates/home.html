@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-
-<body>
-
-    <h1>Welcome to the Nursing App!</h1>
-
-</body>
-
-</html>
+{% extends "base_generic.html" %}
+{% block content %}
+  <h1>Welcome to the Nursing Program Application!</h1>
+  <a href="{% url 'submit' %}">Click here to submit your data</a>
+{% endblock %}

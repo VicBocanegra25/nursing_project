@@ -1,0 +1,17 @@
+<!-- Our form template that allows users to submit their data-->
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Submit Data</h1>
+# Using the post method to send data
+<form method="post">
+    # Using the csrf_token for security
+    {% csrf_token %}
+    # Displaying the items as paragraphs
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock %}
+    
+
