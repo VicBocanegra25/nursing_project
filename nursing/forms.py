@@ -19,5 +19,5 @@ class SubmitDataForm(forms.Form):
     last_name = forms.CharField(
         max_length=50, validators=[validate_alphabetic], label="Last Name"
     )
-    age = forms.IntegerField(label="Age")
+    age = forms.IntegerField(min_value=0, max_value=100, label="Age")
     email = forms.EmailField(label="Email")

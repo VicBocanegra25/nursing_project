@@ -3,11 +3,11 @@
 
 {% block content %}
 <h1>Submit Data</h1>
-# Using the post method to send data
+{% comment %} # Using the post method to send data {% endcomment %}
 <form method="post">
-    # Using the csrf_token for security
+    {% comment %} # Using the csrf_token for security {% endcomment %}
     {% csrf_token %}
-    # Displaying the items as paragraphs
+    {% comment %} # Displaying the items as paragraphs {% endcomment %}
     {{ form.as_p }}
     <button type="submit">Submit</button>
 </form>
