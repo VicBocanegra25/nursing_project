@@ -12,3 +12,4 @@ __pycache__
 *.sql
 *.sqlite3
 .DS_Store
+.env2

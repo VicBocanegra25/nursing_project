@@ -8,3 +8,9 @@ class UserApplication(models.Model):
     last_name = models.CharField(max_length=50)
     age = models.IntegerField()
     email = models.EmailField()
+
+    # A new field for text
+    about_me = models.TextField(null=True, blank=True)
+
+    # And a new one for the translated text
+    about_me_translated = models.TextField(null=True, blank=True)

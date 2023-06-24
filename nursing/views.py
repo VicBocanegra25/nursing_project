@@ -4,6 +4,8 @@ from django.shortcuts import render, redirect
 from .models import UserApplication
 from .forms import SubmitDataForm
 from django.contrib import messages
+from deepl import Translator
+import os
 
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -25,11 +27,27 @@ class SubmitDataView(FormView):
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
         # It should return an HttpResponse.
+
+        # Get DEEPL_API_KEY from environment variables
+        DEEPL_API_KEY = os.getenv("DEEPL_API_KEY")
+
+        # Initialize the translator with your API key
+        translator = Translator(DEEPL_API_KEY)
+
+        # Translate about_me field from Spanish to German
+        text_to_translate = form.cleaned_data["about_me"]
+        translation = translator.translate_text(text_to_translate, target_lang="DE")
+
         UserApplication.objects.create(
             name=form.cleaned_data["name"],
             last_name=form.cleaned_data["last_name"],
             age=form.cleaned_data["age"],
             email=form.cleaned_data["email"],
+            # Adding one for the text field
+            about_me=form.cleaned_data["about_me"],
+            # Adding one for the translated text field
+            about_me_translated=translation,
         )
         messages.success(self.request, "Your form was submitted successfully. Danke!")
+
         return super().form_valid(form)
